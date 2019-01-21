@@ -35,6 +35,7 @@ linkFile = open("link.txt", "r").read().splitlines()
 random.shuffle(linkFile)
 
 def keyIn():
+    global counter
     if counter == 0:
         driver.find_element_by_id('mco_name').send_keys(name)
         driver.find_element_by_id('mco_phone').send_keys(phone)
