@@ -71,7 +71,8 @@ def log(text):
 
 log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 log(f"Name: {name}")
-log(f"Phone number: {phone}")
+log(f"Phone: {phone}")
+log(f"Email: {email}")
 log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 
 for link in linkFile:
