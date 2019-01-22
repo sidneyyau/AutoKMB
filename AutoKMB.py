@@ -89,7 +89,7 @@ for link in linkFile:
     result()
     if counter == len(linkFile):
         log("============= Result ==============")
-        log(f"Processed {len(linkFile)} links, {failCount} failed \n")
+        log(f"Clicked {len(linkFile)} links, {failCount} failed \n")
         if failCount != len(linkFile):
             log(f"Points: {tmpPoint} / 20")
             log(f"Tickets: {tmpTicket}")
