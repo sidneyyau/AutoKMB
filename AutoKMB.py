@@ -15,9 +15,9 @@ print("+++++++++++ AutoKMB v1.0 +++++++++++")
 # phone = "73541125"
 # email = "ctm73541125@gmail.com"
 
-name = "Liu Wai Lim"
-phone = "92715426"
-email = "14217643@life.hkbu.edu.hk"
+name = "Yau Siu Yin"
+phone = "64847091"
+email = "sidney030235@gmail.com"
 
 if not (name and phone and email):
     print("***** Please input all fields to start AutoKMB *****")
@@ -27,6 +27,7 @@ counter = 0
 tmpPoint = 0
 tmpTicket = 0
 failCount = 0
+failedLink = ['']
 
 option = webdriver.ChromeOptions()
 option.add_argument('headless')
@@ -46,8 +47,8 @@ def keyIn():
         pass
     driver.find_element_by_class_name('index_submit').click()
 
-def result():
-    global failCount, tmpPoint, tmpTicket
+def result(url):
+    global failCount, tmpPoint, tmpTicket, failedLink
     try:
         if driver.find_element_by_class_name('submitted_points').text is not tmpPoint:
             tmpPoint = driver.find_element_by_class_name('submitted_points').text
@@ -67,7 +68,8 @@ def result():
         except NoSuchElementException:
             print("Unknown error")
             failCount = failCount + 1
-        log("[FAIL]")
+        log(f"[FAIL]")
+        failedLink.append(url)
 
 def log(text):
     print(text)
@@ -82,17 +84,21 @@ log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 for link in linkFile:
     log(f">>>> {counter + 1} / {len(linkFile)} <<<<")
     driver.get(link)
-    sleep(0.5)
+    sleep(0.3)
     keyIn()
-    sleep(1)
+    sleep(0.7)
     counter = counter + 1
-    result()
+    result(link)
     if counter == len(linkFile):
         log("============= Result ==============")
         log(f"Clicked {len(linkFile)} links, {failCount} failed \n")
         if failCount != len(linkFile):
             log(f"Points: {tmpPoint} / 20")
             log(f"Tickets: {tmpTicket}")
+            if len(failedLink) > 0:
+                print("\nList of failed links:")
+                for fLink in failedLink:
+                    print(fLink)
         else:
             log("No points or tickets record can be retrieved")
         log("====================================")
