@@ -3,9 +3,11 @@
 from selenium import webdriver
 from selenium.common.exceptions import NoSuchElementException
 from time import sleep
+import time
 import random
 import sys
 
+start = time.time()
 print("+++++++++++ AutoKMB v1.0 +++++++++++")
 
 # FOR TESTING
@@ -13,9 +15,9 @@ print("+++++++++++ AutoKMB v1.0 +++++++++++")
 # phone = "73541125"
 # email = "ctm73541125@gmail.com"
 
-name = ""
-phone = ""
-email = ""
+name = "Liu Wai Lim"
+phone = "92715426"
+email = "14217643@life.hkbu.edu.hk"
 
 if not (name and phone and email):
     print("***** Please input all fields to start AutoKMB *****")
@@ -23,7 +25,7 @@ if not (name and phone and email):
 
 counter = 0
 tmpPoint = 0
-tmpToken = 0
+tmpTicket = 0
 failCount = 0
 
 option = webdriver.ChromeOptions()
@@ -45,25 +47,27 @@ def keyIn():
     driver.find_element_by_class_name('index_submit').click()
 
 def result():
-    global failCount, tmpPoint, tmpToken
+    global failCount, tmpPoint, tmpTicket
     try:
         if driver.find_element_by_class_name('submitted_points').text is not tmpPoint:
             tmpPoint = driver.find_element_by_class_name('submitted_points').text
-        if "".join(filter(str.isdigit, driver.find_element_by_class_name("ticket_container").text)) is not tmpToken:
-            tmpToken = "".join(filter(str.isdigit, driver.find_element_by_class_name("ticket_container").text))
-        log(f"Points: {tmpPoint} / 20")
-        if tmpToken:
-            log(f"Tokens: {tmpToken}")
+        if "".join(filter(str.isdigit, driver.find_element_by_class_name("ticket_container").text)) is not tmpTicket:
+            tmpTicket = "".join(filter(str.isdigit, driver.find_element_by_class_name("ticket_container").text))
+        print(f"Points: {tmpPoint} / 20")
+        if tmpTicket:
+            print(f"Tickets: {tmpTicket}")
         else:
-            log("Tokens: 0")
+            print("Tickets: 0")
+        log("[OK]")
     except NoSuchElementException:
         try:
             if driver.find_element_by_class_name('same_sticker_label').text:
-                log("Invalid link, maybe expired/used")
+                print("Invalid link, maybe expired/used")
                 failCount = failCount + 1
         except NoSuchElementException:
-            log("Unknown error")
+            print("Unknown error")
             failCount = failCount + 1
+        log("[FAIL]")
 
 def log(text):
     print(text)
@@ -84,10 +88,16 @@ for link in linkFile:
     counter = counter + 1
     result()
     if counter == len(linkFile):
-        log("============= Summary ==============")
+        log("============= Result ==============")
         log(f"Processed {len(linkFile)} links, {failCount} failed \n")
-        log(f"Points: {tmpPoint} / 20")
-        log(f"Tokens: {tmpToken}")
+        if failCount != len(linkFile):
+            log(f"Points: {tmpPoint} / 20")
+            log(f"Tickets: {tmpTicket}")
+        else:
+            log("No points or tickets record can be retrieved")
         log("====================================")
     else:
         log("------------------------------------")
+
+end = time.time()
+log(f"Time used: {end - start} s")
