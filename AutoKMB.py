@@ -5,23 +5,16 @@ from selenium.common.exceptions import NoSuchElementException
 from time import sleep
 import time
 import random
-import sys
 
-start = time.time()
-print("+++++++++++ AutoKMB v1.0 +++++++++++")
+print("+++++++++++ AutoKMB v2.0 +++++++++++")
 
-# FOR TESTING
-# name = "Chan Tai Man"
-# phone = "73541125"
-# email = "ctm73541125@gmail.com"
-
-name = "Yau Siu Yin"
-phone = "64847091"
-email = "sidney030235@gmail.com"
-
-if not (name and phone and email):
-    print("***** Please input all fields to start AutoKMB *****")
-    sys.exit()
+while True:
+    print("* Please input all fields to start AutoKMB *")
+    name = input("Name: ")
+    phone = input("Phone no.: ")
+    email = input("Email address: ")
+    if name and phone and email:
+        break
 
 counter = 0
 tmpPoint = 0
@@ -75,6 +68,7 @@ def log(text):
     print(text)
     print(text, file = open('result.txt', 'a'))
 
+start = time.time()
 log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 log(f"Name: {name}")
 log(f"Phone: {phone}")
@@ -105,5 +99,6 @@ for link in linkFile:
     else:
         log("------------------------------------")
 
+driver.close()
 end = time.time()
 log(f"Time used: {end - start} s")
