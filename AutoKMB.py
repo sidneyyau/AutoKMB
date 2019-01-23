@@ -5,6 +5,7 @@ from selenium.common.exceptions import NoSuchElementException
 from time import sleep
 import time
 import random
+import re
 
 print("+++++++++++ AutoKMB v2.0 +++++++++++")
 
@@ -22,9 +23,13 @@ tmpTicket = 0
 failCount = 0
 failedLink = ['']
 
+mobileEmulation = {
+    "deviceMetrics": { "width": 360, "height": 640, "pixelRatio": 3.0 },
+    "userAgent": "Mozilla/5.0 (Linux; Android 7.1; Mi A1 Build/N2G47H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.83 Mobile Safari/537.36" }
 option = webdriver.ChromeOptions()
 option.add_argument('headless')
-option.add_argument('window-size=1920x1080')
+# option.add_argument('window-size=1920x1080')
+option.add_experimental_option("mobileEmulation", mobileEmulation)
 driver = webdriver.Chrome(chrome_options=option)
 
 linkFile = open("link.txt", "r").read().splitlines()
@@ -41,28 +46,21 @@ def keyIn():
     driver.find_element_by_class_name('index_submit').click()
 
 def result(url):
-    global failCount, tmpPoint, tmpTicket, failedLink
-    try:
-        if driver.find_element_by_class_name('submitted_points').text is not tmpPoint:
-            tmpPoint = driver.find_element_by_class_name('submitted_points').text
-        if "".join(filter(str.isdigit, driver.find_element_by_class_name("ticket_container").text)) is not tmpTicket:
-            tmpTicket = "".join(filter(str.isdigit, driver.find_element_by_class_name("ticket_container").text))
-        print(f"Points: {tmpPoint} / 20")
-        if tmpTicket:
-            print(f"Tickets: {tmpTicket}")
-        else:
-            print("Tickets: 0")
-        log("[OK]")
-    except NoSuchElementException:
-        try:
-            if driver.find_element_by_class_name('same_sticker_label').text:
-                print("Invalid link, maybe expired/used")
-                failCount = failCount + 1
-        except NoSuchElementException:
-            print("Unknown error")
-            failCount = failCount + 1
-        log(f"[FAIL]")
+    global tmpPoint, tmpTicket, failCount
+    currentURL = driver.current_url
+    while "time" in currentURL:
+        currentURL = driver.current_url
+    if "same_sticker_error" in currentURL:
+        print("Used link")
+        log("[FAIL]")
         failedLink.append(url)
+        failCount = failCount + 1
+    else:
+        tmpPoint = re.findall('(?<=new_pts=)\d\d?', currentURL)[0]
+        tmpTicket = re.findall('(?<=ticket=)\d\d?\d?', currentURL)[0]
+        print(f"Points: {tmpPoint} / 20")
+        print(f"Tickets: {tmpTicket}")
+        log("[OK]")
 
 def log(text):
     print(text)
@@ -80,7 +78,6 @@ for link in linkFile:
     driver.get(link)
     sleep(0.3)
     keyIn()
-    sleep(0.7)
     counter = counter + 1
     result(link)
     if counter == len(linkFile):
