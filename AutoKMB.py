@@ -54,8 +54,8 @@ def result(url):
         failedLink.append(url)
         failCount = failCount + 1
     else:
-        tmpPoint = re.findall('(?<=new_pts=)\d\d?', currentURL)[0]
-        tmpTicket = re.findall('(?<=ticket=)\d\d?\d?', currentURL)[0]
+        tmpPoint = re.findall('(?<=new_pts=)\d+', currentURL)[0]
+        tmpTicket = re.findall('(?<=ticket=)\d+', currentURL)[0]
         print(f"Points: {tmpPoint} / 20")
         print(f"Tickets: {tmpTicket}")
         log("[OK]")
