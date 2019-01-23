@@ -1,7 +1,6 @@
 # coding=utf-8
 
 from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
 from time import sleep
 import time
 import random
@@ -28,7 +27,6 @@ mobileEmulation = {
     "userAgent": "Mozilla/5.0 (Linux; Android 7.1; Mi A1 Build/N2G47H) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/58.0.3029.83 Mobile Safari/537.36" }
 option = webdriver.ChromeOptions()
 option.add_argument('headless')
-# option.add_argument('window-size=1920x1080')
 option.add_experimental_option("mobileEmulation", mobileEmulation)
 driver = webdriver.Chrome(chrome_options=option)
 
