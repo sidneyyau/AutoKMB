@@ -1,6 +1,8 @@
 # coding=utf-8
 
 from selenium import webdriver
+from selenium.common.exceptions import WebDriverException
+from selenium.common.exceptions import NoSuchElementException
 from time import sleep
 import time
 import random
@@ -20,7 +22,7 @@ counter = 0
 tmpPoint = 0
 tmpTicket = 0
 failCount = 0
-failedLink = ['']
+failedLink = []
 
 mobileEmulation = {
     "deviceMetrics": { "width": 360, "height": 640, "pixelRatio": 3.0 },
@@ -35,13 +37,20 @@ random.shuffle(linkFile)
 
 def keyIn():
     global counter
-    if counter == 0:
-        driver.find_element_by_id('mco_name').send_keys(name)
-        driver.find_element_by_id('mco_phone').send_keys(phone)
-        driver.find_element_by_id('mco_email').send_keys(email)
-    else:
+    try:
+        if counter == 0:
+            driver.find_element_by_id('mco_name').send_keys(name)
+            driver.find_element_by_id('mco_phone').send_keys(phone)
+            driver.find_element_by_id('mco_email').send_keys(email)
+        else:
+            pass
+        while "time" in driver.current_url:
+            try:
+                driver.find_element_by_class_name('index_submit').click()
+            except WebDriverException:
+                pass
+    except NoSuchElementException:
         pass
-    driver.find_element_by_class_name('index_submit').click()
 
 def result(url):
     global tmpPoint, tmpTicket, failCount
@@ -74,7 +83,7 @@ log("^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^")
 for link in linkFile:
     log(f">>>> {counter + 1} / {len(linkFile)} <<<<")
     driver.get(link)
-    sleep(0.3)
+    sleep(0.35)
     keyIn()
     counter = counter + 1
     result(link)
@@ -96,4 +105,4 @@ for link in linkFile:
 
 driver.close()
 end = time.time()
-log(f"Time used: {end - start} s")
+log(f"Time used: {round(end - start, 2)} s")
